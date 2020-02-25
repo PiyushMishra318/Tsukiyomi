@@ -1,11 +1,13 @@
 import 'dart:io';
-
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:open_file/open_file.dart';
 import 'dart:convert';
 import 'package:platform/platform.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:device_apps/device_apps.dart';
+import 'dart:io' as io;
 
 class Detail extends StatefulWidget {
   final int index;
@@ -20,6 +22,7 @@ class _DetailState extends State<Detail> {
   String description = "Loading";
   String thumbnail = "Loading";
   Color isFavorite;
+  bool isDownloaded = false;
   dynamic rom;
   void initState() {
     super.initState();
@@ -34,6 +37,8 @@ class _DetailState extends State<Detail> {
       dynamic jsonParsed = jsonDecode(response.body);
       setState(() {
         rom = jsonParsed;
+        print(io.File("/sdcard/Rom${rom['refid']}.zip").existsSync());
+        isDownloaded = io.File("/sdcard/Rom${rom['refid']}.zip").existsSync();
         name = jsonParsed['name'];
         description = jsonParsed['name'];
         thumbnail = jsonParsed['thumbnail'];
@@ -82,9 +87,24 @@ class _DetailState extends State<Detail> {
   }
 
   androidIntent() async {
+    // File file = await FilePicker.getFile();
+    // for a file
     bool isInstalled = await DeviceApps.isAppInstalled('com.fastemulator.gba');
     if (isInstalled) {
-      DeviceApps.openApp('com.fastemulator.gba');
+      if (const LocalPlatform().isAndroid) {
+        if (isDownloaded == false) {
+          final AndroidIntent intent = AndroidIntent(
+              action: 'action_view',
+              data: Uri.encodeFull(
+                  "https://tsukiyomi.herokuapp.com/Roms/Rom${rom['refid']}.zip"),
+              package:
+                  "com.android.chrome.implicit.fallback" // replace com.example.app with your applicationId
+              );
+          await intent.launch();
+        } else
+          // OpenFile.open("/sdcard/Rom${rom['refid']}.zip");
+          DeviceApps.openApp('com.fastemulator.gba');
+      }
     } else {
       if (const LocalPlatform().isAndroid) {
         final AndroidIntent intent = AndroidIntent(
@@ -97,6 +117,12 @@ class _DetailState extends State<Detail> {
         await intent.launch();
       }
     }
+    // final AndroidIntent intent = AndroidIntent(
+    //   action: 'action_view',
+    //   type: "*/*",
+    //   // replace com.example.app with your applicationId
+    // );
+    // await intent.launch();
   }
 
   @override
@@ -226,11 +252,17 @@ class _DetailState extends State<Detail> {
                                               MainAxisAlignment.spaceAround,
                                           children: <Widget>[
                                             Icon(
-                                              Icons.file_download,
-                                              size: 24.0,
-                                            ),
+                                                isDownloaded
+                                                    ? Icons.play_circle_filled
+                                                    : Icons.file_download,
+                                                size: 30.0,
+                                                color: isDownloaded
+                                                    ? Colors.blueAccent
+                                                    : null),
                                             Text(
-                                              'Play/Download',
+                                              isDownloaded
+                                                  ? "Play"
+                                                  : 'Download',
                                               style: TextStyle(fontSize: 10.0),
                                             )
                                           ],

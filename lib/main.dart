@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:tsukiyomi/start_page.dart';
 import 'package:tsukiyomi/login.dart';
 
 void main(List<String> args) async {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await FlutterDownloader.initialize();
   runApp(MyApp());
 }
 

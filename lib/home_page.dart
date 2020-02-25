@@ -153,7 +153,8 @@ class _HomepageState extends State<Homepage> {
                     itemCount: recommended.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
-                      if (recommended[index].containsKey('refid')) {
+                      if (recommended[index] != null &&
+                          recommended[index].containsKey('refid')) {
                         var item = recommended[index];
                         return Column(
                           children: <Widget>[
