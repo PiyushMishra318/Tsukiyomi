@@ -25,6 +25,7 @@ class LoginPageState extends State<Loginpage>
 
   final _formKey = GlobalKey<FormState>();
   final myController = TextEditingController();
+  final countryCodeController = TextEditingController();
   String signedPhone;
   AnimationController _iconAnimationController;
   Animation<double> _iconAnimation;
@@ -109,7 +110,8 @@ class LoginPageState extends State<Loginpage>
         }
       });
     });
-    myController.text = '+91';
+    myController.text = "";
+    countryCodeController.text = "+91";
     _iconAnimationController = new AnimationController(
         vsync: this, duration: new Duration(microseconds: 500));
     _iconAnimation = new CurvedAnimation(
@@ -137,18 +139,14 @@ class LoginPageState extends State<Loginpage>
   }
 
   Future<void> verifyPhone() async {
-    String phone = myController.text;
-    String searchPhone = myController.text;
-    List newPh = searchPhone.split("+91");
-    String sendPhone = newPh[1];
-    print(sendPhone);
+    String phone = countryCodeController.text + myController.text;
     final PhoneCodeAutoRetrievalTimeout autoRetrieve = (String verId) {
       this.verificationId = verId;
     };
     final PhoneCodeSent smsCodeSent = (String verId, [int forceCodeResend]) {
       this.verificationId = verId;
       smsCodeDialog(context).then((value) {
-        getUser(sendPhone);
+        getUser(phone);
         print('Otp Login');
       });
     };
@@ -157,7 +155,7 @@ class LoginPageState extends State<Loginpage>
         (AuthCredential credential) {
       // print(credential);
       _onLoading();
-      getUser(sendPhone);
+      getUser(phone);
       print('Auto Logged In');
     };
     final PhoneVerificationFailed failed = (AuthException exception) {
@@ -224,19 +222,41 @@ class LoginPageState extends State<Loginpage>
                           child: ClipRRect(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12)),
-                              child: TextField(
-                                controller: myController,
-                                style: TextStyle(color: Colors.black),
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  hintText: 'Phone',
-                                  prefixIcon: const Icon(
-                                    Icons.phone,
-                                    color: Colors.red,
+                              child: new Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  new Container(
+                                      width: 70.0,
+                                      child: TextField(
+                                        controller: countryCodeController,
+                                        style: TextStyle(color: Colors.black),
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          hintText: '+91',
+                                        ),
+                                        obscureText: false,
+                                      )),
+                                  SizedBox(
+                                    width: 20.0,
                                   ),
-                                ),
-                                obscureText: false,
+                                  new Flexible(
+                                      child: TextField(
+                                    controller: myController,
+                                    style: TextStyle(color: Colors.black),
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      hintText: 'Phone',
+                                      prefixIcon: const Icon(
+                                        Icons.phone,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    obscureText: false,
+                                  )),
+                                ],
                               ))),
                     ),
                   ),
