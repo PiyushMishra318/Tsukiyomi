@@ -1,16 +1,9 @@
-# Tsukiyomi
+# Tsukiyomi (archived)
 
-A new Flutter application.
+> **This repository is archived.** Active development continues at **[Tsukiyomi-Platform](https://github.com/PiyushMishra318/Tsukiyomi-Platform)** — a monorepo with the Flutter client and NestJS API.
 
-## Getting Started
+The original Flutter GBA catalogue app and its standalone backend have been superseded by the platform repo.
 
-This project is a starting point for a Flutter application.
+## License
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+MIT © 2026 [Piyush Mishra](https://github.com/PiyushMishra318)
